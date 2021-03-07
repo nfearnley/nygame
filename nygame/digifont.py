@@ -72,9 +72,6 @@ class DigiText:
             y = min(y, srect.y)
             h = max(h, srect.h)
             w += charw
-        # replace the last charw with srect.w
-        w -= charw
-        w += srect.w
         return Rect(0, y, w, h)
 
     @property
