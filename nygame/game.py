@@ -1,5 +1,6 @@
 import pygame
 from . import font_cache, time
+from .music import music
 
 
 class Game:
@@ -13,13 +14,18 @@ class Game:
         self.showfps = showfps
         self.fps_font = font_cache.get_font("Consolas", 24)
         self.bgcolor = bgcolor
+        self.MUSIC_END_EVENT = pygame.event.custom_type()
+        pygame.mixer.music.set_endevent(self.MUSIC_END_EVENT)
 
     def run(self):
         while self.running:
             self.surface.fill(self.bgcolor)
             events = pygame.event.get()
-            if any(e for e in events if e.type == pygame.QUIT):
-                self.running = False
+            for e in events:
+                if e.type == pygame.QUIT:
+                    self.running = False
+                elif e.type == self.MUSIC_END_EVENT:
+                    music.on_end(e)
             self.loop(events)
             if self.showfps:
                 self.draw_fps(self.clock.get_fps())

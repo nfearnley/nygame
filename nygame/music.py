@@ -50,7 +50,10 @@ class Music:
     @require_status(Status.playing, Status.paused)
     def stop(self):
         pgmusic.stop()
-        self.offset = 0
+        self.on_stop()
+
+    def on_end(self, e):
+        self.offset = (pgmusic.get_pos() / 1000)
         self.status = Status.stopped
 
     @require_status(Status.playing)
