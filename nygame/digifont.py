@@ -138,7 +138,9 @@ class DigiSpan:
     def char_width(self):
         if self._char_width is None:
             metrics = self.font.get_metrics(self.text)
-            self._char_width = sum(m[4] for m in metrics)  # 4 = HORIZONTAL_ADVANCE_X
+            self._char_width = 0
+            self._char_width += sum(m[4] for m in metrics if m is not None)  # 4 = HORIZONTAL_ADVANCE_X
+            self._char_width += sum(self.font.get_rect(self.text[i], style=self.style).w for i, m in enumerate(metrics) if m is None)
         return self._char_width
 
     def get_rect(self):
