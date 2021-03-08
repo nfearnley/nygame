@@ -101,7 +101,7 @@ class DigiSpan:
         cls, text: str, *, font: str = None, size: int = None, color: _ColorValue = None,
         bold: bool = False, italic: bool = False, underline: bool = False, strikethru: bool = False
     ):
-        key=(text, font, size, color, bold, italic, underline, strikethru)
+        key = (text, font, size, color, bold, italic, underline, strikethru)
         if key in cls._cached:
             return cls._cached[key]
         instance = super().__new__(cls)
