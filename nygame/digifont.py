@@ -69,7 +69,7 @@ class DigiText:
         for span in self._spans:
             srect = span.get_rect()
             charw = span.char_width
-            y = min(y, srect.y)
+            y = max(y, srect.y)
             h = max(h, srect.h)
             w += charw
         return Rect(0, y, w, h)
@@ -79,8 +79,9 @@ class DigiText:
         return sum(s.char_width for s in self._spans)
 
     def render(self):
-        surf = Surface(self.get_rect().size)
-        self.render_to(surf, (0, 0))
+        rect = self.get_rect()
+        surf = Surface(rect.size)
+        self.render_to(surf, (0, rect.y))
         return surf
 
     def render_to(self, surf: Surface, dest: Union[Tuple[int, int], Sequence[int], Rect]) -> Rect:
