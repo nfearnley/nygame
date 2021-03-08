@@ -17,12 +17,12 @@ class DigiText:
 
     __slots__ = ("_spans")
 
-    def __new__(cls, firstarg = None, *args, **kwargs):
+    def __new__(cls, firstarg=None, *args, **kwargs):
         if isinstance(firstarg, cls):
             return firstarg
         if not isinstance(firstarg, str) and isinstance(firstarg, Iterable):
             return reduce(operator.add, (DigiText(t) for t in firstarg))
-        
+
         instance = super().__new__(cls)
         instance._spans = None
         return instance
@@ -103,7 +103,6 @@ class DigiSpan:
         key=(text, font, size, color, bold, italic, underline, strikethru)
         if key in cls._cached:
             return cls._cached[key]
-
         instance = super().__new__(cls)
         cls._cached[key] = instance
         instance.text = None
