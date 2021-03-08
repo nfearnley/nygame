@@ -93,5 +93,27 @@ class Music:
     def volume(self, value):
         return pgmusic.set_volume(value)
 
+    @property
+    def paused(self):
+        return self.status == Status.paused
+
+    @paused.setter
+    def paused(self, value):
+        if value:
+            self.pause()
+        else:
+            self.play()
+
+    @property
+    def playing(self):
+        return self.status == Status.playing
+
+    @playing.setter
+    def playing(self, value):
+        if value:
+            self.play()
+        else:
+            self.pause()
+
 
 music = Music()
