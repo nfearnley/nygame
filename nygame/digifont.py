@@ -85,7 +85,7 @@ class DigiText:
 
     def render_to(self, surf: Surface, dest: Union[Tuple[int, int], Sequence[int], Rect]) -> Rect:
         if isinstance(dest, Rect):
-            dest = Rect.topleft
+            dest = dest.topleft
         x, y = dest
         for span in self._spans:
             span.render_to(surf, (x, y))
