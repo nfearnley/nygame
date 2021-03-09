@@ -1,15 +1,40 @@
 from pathlib import Path
 import json
 
+import pygame
 
-emoji_sets = {}
+emojisets = {}
 
 
 class EmojiSet():
-    def __init__(self, emoji_size, emoji_map, sheet):
+    def __init__(self, name, emoji_size, emoji_map, sheet):
+        self.name = name
         self.emoji_size = emoji_size
         self.emoji_map = emoji_map
+        sheet_size = sheet.get_size()
+        self.emojis_per_line = sheet_size[0] / emoji_size[0]
         self.sheet = sheet
+
+    def __str__(self):
+        return f"EmojiSet({self.name!r})"
+
+    def __getitem__(self, s):
+        # TODO: Return actual image
+        index = self.emoji_map[s]
+        rect = self.index2rect(index)
+        emoji_surf = self.sheet.subsurface(rect)
+        return emoji_surf
+
+    def __contains__(self, s):
+        return s in self.emoji_map
+
+    def index2rect(self, index):
+        y, x = divmod(index, self.emojis_per_line)
+        w, h = self.emoji_size
+        x *= w
+        y *= h
+        rect = pygame.Rect(x, y, w, h)
+        return rect
 
     @classmethod
     def from_json(cls, j, sheet):
@@ -24,13 +49,15 @@ class EmojiSet():
         with path.open("r", encoding="utf-8") as f:
             j = json.load(f)
         sheet_path = path.with_suffix(".png")
-        sheet = sheet_path.read_bytes()
+        with sheet_path.open("rb") as f:
+            sheet = pygame.image.load(f)
         return cls.from_json(j, sheet)
 
 
-def load_emoji_set(folder_path):
-    emoji_set = EmojiSet.load(folder_path)
-    emoji_sets[emoji_set.name] = emoji_set
+def load_emojiset(folder_path):
+    emojiset = EmojiSet.load(folder_path)
+    emojisets[emojiset.name] = emojiset
+    return emojiset
 
 
 """
@@ -40,7 +67,7 @@ def load_emoji_set(folder_path):
     "emoji_height": 72,
     "emojis": [
         "\U000000A9",
-        "\U000000EA",
+        "\U000000AE",
         ...
     ]
 }
