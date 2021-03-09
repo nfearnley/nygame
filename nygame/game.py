@@ -19,7 +19,8 @@ class Game:
 
     def run(self):
         while self.running:
-            self.surface.fill(self.bgcolor)
+            if self.bgcolor is not None:
+                self.surface.fill(self.bgcolor)
             events = pygame.event.get()
             for e in events:
                 if e.type == pygame.QUIT:
