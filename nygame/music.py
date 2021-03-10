@@ -1,6 +1,7 @@
 from enum import Enum
 from functools import wraps
 
+import pygame
 from pygame.mixer import Sound
 from pygame.mixer import music as pgmusic
 
@@ -117,6 +118,12 @@ class Music:
             self.play()
         else:
             self.pause()
+
+    # Module init
+    @staticmethod
+    def init():
+        Music.MUSIC_END_EVENT = pygame.event.custom_type()
+        pgmusic.set_endevent(Music.MUSIC_END_EVENT)
 
 
 music = Music()

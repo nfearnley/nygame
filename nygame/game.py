@@ -14,8 +14,7 @@ class Game:
         self.showfps = showfps
         self.fps_font = font_cache.get_font("Consolas", 24)
         self.bgcolor = bgcolor
-        self.MUSIC_END_EVENT = pygame.event.custom_type()
-        pygame.mixer.music.set_endevent(self.MUSIC_END_EVENT)
+        music.init()
 
     def run(self):
         while self.running:
