@@ -4,19 +4,22 @@ from .music import music
 
 
 class Game:
-    def __init__(self, *, size=(800, 600), scale=1, fps=30, bgcolor="black", showfps=False):
+    def __init__(self, *, size=(800, 600), scale=1, fps=30, showfps=False, bgcolor="black"):
         pygame.init()
-        self.clock = time.Clock()
-        self._currsize = None
-        self._currscale = None
+
         self.size = size
         self.scale = scale
-        self.reset_display()
-        self.running = True
         self.fps = fps
         self.showfps = showfps
-        self.fps_font = font_cache.get_font("Consolas", 24)
         self.bgcolor = bgcolor
+
+        self._currsize = None
+        self._currscale = None
+        self.clock = time.Clock()
+        self.running = True
+        self.fps_font = font_cache.get_font("Consolas", 24)
+
+        self.reset_display()
         music.init()
 
     @property
@@ -44,6 +47,17 @@ class Game:
             self.out_surface = pygame.display.set_mode(scaled_size, pygame.DOUBLEBUF)
             self.surface = pygame.Surface(self.size)
 
+    @property
+    def mouse_pos(self):
+        x, y = pygame.mouse.get_pos()
+        return int(x / self.scale), int(y / self.scale)
+
+    @mouse_pos.setter
+    def mouse_pos(self, newpos):
+        x, y = newpos
+        newpos = x * self.scale, y * self.scale
+        pygame.mouse.set_pos(newpos)
+
     def run(self):
         while self.running:
             if self.bgcolor is not None:
@@ -54,6 +68,9 @@ class Game:
                     self.running = False
                 elif e.type == music.MUSIC_END_EVENT:
                     music.on_end(e)
+                elif e.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN):
+                    x, y = e.pos
+                    e.pos = x * self.scale, y * self.scale
             self.loop(events)
             if self.showfps:
                 self.draw_fps(self.clock.get_fps())
