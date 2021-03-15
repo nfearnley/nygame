@@ -91,11 +91,11 @@ class Music:
 
     @property
     def volume(self):
-        return pgmusic.get_volume()
+        return pgmusic.get_volume() * 128
 
     @volume.setter
     def volume(self, value):
-        return pgmusic.set_volume(value)
+        return pgmusic.set_volume(value / 128)
 
     @property
     def paused(self):
