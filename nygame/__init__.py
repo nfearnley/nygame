@@ -1,3 +1,7 @@
+import os
+os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "1"
+del os
+
 from . import time, digifont, emoji, data
 from .music import music
 from .game import Game
