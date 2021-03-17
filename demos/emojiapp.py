@@ -2,10 +2,10 @@ from nygame import utils
 import importlib.resources as pkg_resources
 
 from emoji import UNICODE_EMOJI_ENGLISH
-from pygame.constants import MOUSEMOTION, MOUSEWHEEL
 
 import nygame
 import nygame.data.emojisets
+from nygame import SDL_EventType
 from nygame import DigiText as T
 from nygame.emoji import load_emojiset
 
@@ -24,9 +24,9 @@ class Game(nygame.Game):
 
     def loop(self, events):
         for event in events:
-            if event.type == MOUSEWHEEL:
+            if event.type == SDL_EventType.MOUSEWHEEL.value:
                 self.index = utils.clamp(0, self.index - event.y * 10, len(self.codes)-1)
-            elif event.type == MOUSEMOTION:
+            elif event.type == SDL_EventType.MOUSEMOTION.value:
                 self.hovered = pos2index(event.pos)
         for n, i in enumerate(range(self.index, min(self.index + 100, len(self.codes)-1))):
             code = self.codes[i]
