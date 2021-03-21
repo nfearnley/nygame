@@ -6,6 +6,7 @@ from .music import music
 class Game:
     def __init__(self, *, size=(800, 600), scale=1, fps=30, showfps=False, bgcolor="black"):
         pygame.init()
+        pygame.colordict.THECOLORS["clear"] = (0,0,0,0)
 
         self.size = size
         self.scale = scale
