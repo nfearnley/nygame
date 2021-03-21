@@ -10,4 +10,4 @@ from .digifont import DigiText
 from .perf import perf
 from .constants import *
 
-__all__ = ["time", "digifont", "emoji", "data", "music", "Game", "DigiText", "perf"]
+__all__ = ["Rect", "Color", "time", "digifont", "emoji", "data", "music", "Game", "DigiText", "perf"]
