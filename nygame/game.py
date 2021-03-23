@@ -6,7 +6,7 @@ from .music import music
 class Game:
     def __init__(self, *, size=(800, 600), scale=1, fps=30, showfps=False, bgcolor="black"):
         pygame.init()
-        pygame.colordict.THECOLORS["clear"] = (0,0,0,0)
+        pygame.colordict.THECOLORS["clear"] = (0, 0, 0, 0)
 
         self.size = size
         self.scale = scale
@@ -20,8 +20,12 @@ class Game:
         self.running = True
         self.fps_font = font_cache.get_font("Consolas", 24)
 
+        self.eventhandlers = []
+        self.register_eventhandler(self.quit_handler)
+        self.register_eventhandler(self.mouse_handler)
+
         self.reset_display()
-        music.init()
+        music.init(self)
 
     @property
     def scale(self):
@@ -65,13 +69,7 @@ class Game:
                 self.surface.fill(self.bgcolor)
             events = pygame.event.get()
             for e in events:
-                if e.type == pygame.QUIT:
-                    self.running = False
-                elif e.type == music.MUSIC_END_EVENT:
-                    music.on_end(e)
-                elif e.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN):
-                    x, y = e.pos
-                    e.pos = x * self.scale, y * self.scale
+                self.handle_event(e)
             self.loop(events)
             if self.showfps:
                 self.draw_fps(self.clock.get_fps())
@@ -90,3 +88,19 @@ class Game:
     def loop(self):
         # Game code runs here
         raise NotImplementedError
+
+    def register_eventhandler(self, handler):
+        self.eventhandlers.append(handler)
+
+    def handle_event(self, e):
+        for eventhandler in self.eventhandlers:
+            eventhandler(e)
+
+    def mouse_handler(self, e):
+        if e.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN):
+            x, y = e.pos
+            e.pos = x / self.scale, y / self.scale
+
+    def quit_handler(self, e):
+        if e.type == pygame.QUIT:
+            self.running = False

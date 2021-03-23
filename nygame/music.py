@@ -28,6 +28,8 @@ def require_status(*st):
 
 class Music:
     def __init__(self):
+        self.MUSIC_END_EVENT = None
+        self._initialized = False
         self.length = 0
         self.offset = 0
         self.status = Status.initialized
@@ -53,7 +55,7 @@ class Music:
         pgmusic.stop()
         self.on_stop()
 
-    def on_end(self, e):
+    def on_end(self):
         self.offset = (pgmusic.get_pos() / 1000)
         self.status = Status.stopped
 
@@ -119,11 +121,18 @@ class Music:
         else:
             self.pause()
 
+    def handle_event(self, e):
+        if e.type == self.MUSIC_END_EVENT:
+            self.on_end()
+
     # Module init
-    @staticmethod
-    def init():
-        Music.MUSIC_END_EVENT = pygame.event.custom_type()
-        pgmusic.set_endevent(Music.MUSIC_END_EVENT)
+    def init(self, game):
+        if self._initialized:
+            return
+        self.MUSIC_END_EVENT = pygame.event.custom_type()
+        pgmusic.set_endevent(self.MUSIC_END_EVENT)
+        game.register_eventhandler(self.handle_event)
+        self._initialized = True
 
 
 music = Music()
