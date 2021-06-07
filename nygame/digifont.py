@@ -3,7 +3,7 @@ import operator
 
 from typing import Iterable, List, Sequence, Tuple, Union
 from pygame.freetype import STYLE_UNDERLINE
-from pygame import Rect, Surface, Color, freetype
+from pygame import Rect, Surface, Color, freetype, SRCALPHA
 
 from . import font_cache
 
@@ -80,7 +80,7 @@ class DigiText:
 
     def render(self):
         rect = self.get_rect()
-        surf = Surface(rect.size)
+        surf = Surface(rect.size, flags = SRCALPHA)
         self.render_to(surf, (0, rect.y))
         return surf
 
