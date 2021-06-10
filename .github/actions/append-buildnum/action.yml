@@ -14,7 +14,7 @@ runs:
         VERSION_REGEX: ^__version__ = \"\(.*\)\" *$
       run: |
         OLD_VERSION=$(sed -n "s/${VERSION_REGEX}/\1/p" "${VERSION_FILE}")
-        echo "::set-env name=GIGGLE::$OLD_VERSION"
+        echo "GIGGLE=$OLD_VERSION >> $GITHUB_ENV"
         echo -e "old-version $(echo $OLD_VERSION)"
       shell: bash
     - name: Print old version number
