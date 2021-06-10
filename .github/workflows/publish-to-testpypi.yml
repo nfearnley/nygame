@@ -11,12 +11,10 @@ jobs:
     - name: Checkout source
       uses: actions/checkout@master
 
-    - name: Append commit hash to version number
-      run: |
-        VERSION_FILE="nygame/__init__.py"
-        OLD_VERSION="^ *__version__ *= *\"\([0-9]\+.[0-9]\+.[0-9]\+\)\" *$"
-        NEW_VERSION="__version__ = \\\"\1.dev${GITHUB_RUN_NUMBER}\\\""
-        sed -i "s/${OLD_VERSION}/${NEW_VERSION}/" "$VERSION_FILE"
+    - name: Append build number to version
+      uses: ./.github/actions/append-buildnum
+      with:
+        package: nygame
 
     - name: Set up Python 3.8
       uses: actions/setup-python@v1
