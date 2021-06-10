@@ -5,6 +5,14 @@ inputs:
     description: Package name
     required: true
 
+outputs:
+  old-version:
+    description: Old Version
+    value: ${{ sets.version-appender.outputs.old-version }}
+  new-version:
+    description: New Version
+    value: ${{ sets.version-appender.outputs.new-version }}
+
 runs:
   using: composite
   steps:
@@ -12,7 +20,7 @@ runs:
       env:
         VERSION_FILE: ${{ inputs.package }}/__init__.py
         VERSION_REGEX: ^__version__ = \"\(.*\)\" *\r
-      run: sed -n "s/${VERSION_REGEX}/\1/p" "${VERSION_FILE}"
+      run: echo "::set-output name=old-version::$(sed -n "s/${VERSION_REGEX}/\1/p" "${VERSION_FILE})"
       shell: bash
     - name: Append build number to version
       env:
@@ -25,5 +33,5 @@ runs:
       env:
         VERSION_FILE: ${{ inputs.package }}/__init__.py
         VERSION_REGEX: ^__version__ = \"\(.*\)\" *\r
-      run: sed -n "s/${VERSION_REGEX}/\1/p" "${VERSION_FILE}"
+      run: echo "::set-output name=new-version::$(sed -n "s/${VERSION_REGEX}/\1/p" "${VERSION_FILE})"
       shell: bash
