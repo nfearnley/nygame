@@ -11,7 +11,7 @@ runs:
     - name: Print old version number
       env:
         VERSION_FILE: ${{ inputs.package }}/__init__.py
-        VERSION_REGEX: ^__version__ = \"\(.*\)\" *\r
+        VERSION_REGEX: ^__version__ = \"\(.*\)\" *$
       run: |
         echo -e "Hello"
         OLD_VERSION=$(sed -n "s/${VERSION_REGEX}/\1/p" "${VERSION_FILE}")
@@ -27,7 +27,7 @@ runs:
     - name: Print new version number
       env:
         VERSION_FILE: ${{ inputs.package }}/__init__.py
-        VERSION_REGEX: ^__version__ = \"\(.*\)\" *\r
+        VERSION_REGEX: ^__version__ = \"\(.*\)\" *$
       run: |
         echo -e "Goodbye"
         NEW_VERSION=$(sed -n "s/${VERSION_REGEX}/\1/p" "${VERSION_FILE}")
