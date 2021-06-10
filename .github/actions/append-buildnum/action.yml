@@ -20,7 +20,9 @@ runs:
       env:
         VERSION_FILE: ${{ inputs.package }}/__init__.py
         VERSION_REGEX: ^__version__ = \"\(.*\)\" *\r
-      run: echo "::set-output name=old-version::$(sed -n "s/${VERSION_REGEX}/\1/p" "${VERSION_FILE})"
+      run: |
+        NEW_VERSION=$(sed -n "s/${VERSION_REGEX}/\1/p" "${VERSION_FILE})")
+        echo "::set-output name=old-version::${NEW_VERSION}"
       shell: bash
     - name: Append build number to version
       env:
@@ -33,5 +35,7 @@ runs:
       env:
         VERSION_FILE: ${{ inputs.package }}/__init__.py
         VERSION_REGEX: ^__version__ = \"\(.*\)\" *\r
-      run: echo "::set-output name=new-version::$(sed -n "s/${VERSION_REGEX}/\1/p" "${VERSION_FILE})"
+      run: |
+        OLD_VERSION=$(sed -n "s/${VERSION_REGEX}/\1/p" "${VERSION_FILE})")
+        echo "::set-output name=new-version::${OLD_VERSION}"
       shell: bash
