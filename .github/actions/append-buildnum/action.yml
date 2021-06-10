@@ -15,7 +15,9 @@ runs:
       run: |
         echo -e "Hello"
         OLD_VERSION=$(sed -n "s/${VERSION_REGEX}/\1/p" "${VERSION_FILE}")
+        echo "::set-env name=GIGGLE::$OLD_VERSION
         echo -e "old-version $(echo $OLD_VERSION)"
+        echo -e "GIGGLE $(echo $GIGGLE)"
       shell: bash
     - name: Append build number to version
       env:
