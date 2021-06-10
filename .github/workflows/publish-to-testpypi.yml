@@ -15,7 +15,7 @@ jobs:
       run: |
         VERSION_FILE="nygame/__init__.py"
         OLD_VERSION="^ *__version__ *= *\"\([0-9]\+.[0-9]\+.[0-9]\+\)\" *$"
-        NEW_VERSION="__version__ = \\\"\1.dev${GITHUB_RUN_ID}\\\""
+        NEW_VERSION="__version__ = \\\"\1.dev${GITHUB_RUN_NUMBER}\\\""
         sed -i "s/${OLD_VERSION}/${NEW_VERSION}/" "$VERSION_FILE"
 
     - name: Set up Python 3.8
