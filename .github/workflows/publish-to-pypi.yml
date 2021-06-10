@@ -1,4 +1,4 @@
-name: Publish Python 🐍 distributions 📦 to PyPI and TestPyPI
+name: Publish Python distributions to PyPI and TestPyPI
 
 on: push
 
@@ -11,7 +11,7 @@ jobs:
     - uses: actions/checkout@master
 
     - name: Set up Python 3.8
-      uses: action/setup-python@v1
+      uses: actions/setup-python@v1
       with:
         python-version: 3.8
     
