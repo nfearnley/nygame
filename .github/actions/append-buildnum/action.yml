@@ -5,14 +5,6 @@ inputs:
     description: Package name
     required: true
 
-outputs:
-  old-version:
-    description: Old Version
-    value: ${{ steps.version-appender.outputs.old-version }}
-  new-version:
-    description: New Version
-    value: ${{ steps.version-appender.outputs.new-version }}
-
 runs:
   using: composite
   steps:
@@ -22,7 +14,7 @@ runs:
         VERSION_REGEX: ^__version__ = \"\(.*\)\" *\r
       run: |
         NEW_VERSION=$(sed -n "s/${VERSION_REGEX}/\1/p" "${VERSION_FILE}")
-        echo "::set-output name=old-version::${NEW_VERSION}"
+        echo "::debug name=old-version::${NEW_VERSION}"
       shell: bash
     - name: Append build number to version
       env:
@@ -37,5 +29,5 @@ runs:
         VERSION_REGEX: ^__version__ = \"\(.*\)\" *\r
       run: |
         OLD_VERSION=$(sed -n "s/${VERSION_REGEX}/\1/p" "${VERSION_FILE}")
-        echo "::set-output name=new-version::${OLD_VERSION}"
+        echo "::debug name=new-version::${OLD_VERSION}"
       shell: bash
