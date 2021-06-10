@@ -19,6 +19,7 @@ runs:
       shell: bash
     - name: Print old version number
       run: echo -e "GIGGLE $(echo $GIGGLE)"
+      shell: bash
     - name: Append build number to version
       env:
         VERSION_FILE: ${{ inputs.package }}/__init__.py
