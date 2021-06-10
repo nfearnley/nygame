@@ -1,10 +1,8 @@
-nygame
-======
+# nygame
 
 nygame is a wrapper around the pygame library. It's goal is to provide and more pythonic and easy to use experience.
 
-Usage
-=====
+## Usage
 
 A basic game structure can be started like this:
 
@@ -28,7 +26,12 @@ After `Game.__init__()` is called, a new game. A window of 300x200 will be creat
 
 `Game.loop()` will be called every frame, with the most recent events in the `events` argument. The screen will automatically be cleared before every frame and can be drawn to by using `self.surface`.
 
-Demos
-=====
+## Demos
 
-[EmojiApp](demos)
+[EmojiApp](demos) - A demo app that lets you browse through emoji
+
+## Development
+
+### Deployment
+
+???
