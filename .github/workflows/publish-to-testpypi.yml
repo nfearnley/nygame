@@ -2,8 +2,6 @@ name: Publish to TestPyPI
 
 on: push
 
-
-
 jobs:
   build-and-publish:
     name: Build and publish distributions to TestPyPi
