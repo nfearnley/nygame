@@ -1,3 +1,5 @@
+__version__ = "1.0.0"
+
 from . import _quietload    # disables pygame startup message
 
 from pygame import Rect, Color, joystick
