@@ -1,3 +1,4 @@
+from nygame.common import Coord
 import pygame
 from . import font_cache, time
 from .music import music
@@ -98,8 +99,7 @@ class Game:
 
     def mouse_handler(self, e):
         if e.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN):
-            x, y = e.pos
-            e.pos = x / self.scale, y / self.scale
+            e.pos = tuple(Coord(e.pos) / self.scale)
 
     def quit_handler(self, e):
         if e.type == pygame.QUIT:
