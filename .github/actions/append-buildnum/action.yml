@@ -20,9 +20,9 @@ runs:
     - name: Append build number to version
       env:
         VERSION_FILE: ${{ inputs.package }}/__init__.py
-        OLD_VERSION: ^*__version__ *= *\"\([0-9]\+.[0-9]\+.[0-9]\+\)\" *$
+        VERSION_REGEX: ^__version__ = \"\(.*\)\" *$
         NEW_VERSION: __version__ = \"\1.dev${{ github.run_number }}\"
-      run: sed -i "s/${OLD_VERSION}/${NEW_VERSION}/" "${VERSION_FILE}"
+      run: sed -i "s/${VERSION_REGEX}/${NEW_VERSION}/" "${VERSION_FILE}"
       shell: bash
     - name: Print new version number
       env:
