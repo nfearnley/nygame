@@ -8,6 +8,14 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
+    - name: Checkout source
+      uses: actions/checkout@master
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.8
+    
     - name: Build Python distributions
     - uses: ./.github/actions/build
 
