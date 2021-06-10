@@ -1,10 +1,10 @@
-name: Publish Python distributions to PyPI and TestPyPI
+name: Publish to TestPyPI
 
 on: push
 
 jobs:
   build-and-publish:
-    name: Build and publish it to PyPi and TestPyPi
+    name: Build and publish distributions to TestPyPi
     runs-on: ubuntu-18.04
 
     steps:
