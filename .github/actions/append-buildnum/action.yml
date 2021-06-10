@@ -8,10 +8,10 @@ inputs:
 outputs:
   old-version:
     description: Old Version
-    value: ${{ sets.version-appender.outputs.old-version }}
+    value: ${{ steps.version-appender.outputs.old-version }}
   new-version:
     description: New Version
-    value: ${{ sets.version-appender.outputs.new-version }}
+    value: ${{ steps.version-appender.outputs.new-version }}
 
 runs:
   using: composite
