@@ -22,7 +22,7 @@ runs:
         echo -e "old-version=$OLD_VERSION" >> $GITHUB_ENV
       shell: bash
 
-    - name: Print new version number
+    - name: Set new version number
       run: |
         NEW_VERSION=${{ env.old-version }}.dev${{ github.run_number }}
         echo -e "new-version=$NEW_VERSION" >> $GITHUB_ENV
