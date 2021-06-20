@@ -1,7 +1,16 @@
+import inspect
+import asyncio
+
 from nygame.common import Coord
 import pygame
 from . import font_cache, time
 from .music import music
+
+
+async def wrap_async(value):
+    if inspect.isawaitable(value):
+        return await value
+    return value
 
 
 class Game:
@@ -65,37 +74,40 @@ class Game:
         pygame.mouse.set_pos(newpos)
 
     def run(self):
+        asyncio.run(self.run_async())
+
+    async def run_async(self):
         while self.running:
             if self.bgcolor is not None:
                 self.surface.fill(self.bgcolor)
             events = pygame.event.get()
             for e in events:
                 self.handle_event(e)
-            self.loop(events)
+            await wrap_async(self.loop(events))
             if self.showfps:
-                self.draw_fps(self.clock.get_fps())
+                await wrap_async(self.draw_fps(self.clock.get_fps()))
             if self.out_surface is not None:
                 pygame.transform.scale(self.surface, self.out_surface.get_size(), self.out_surface)
             pygame.display.flip()
             self.clock.tick_busy_loop(self.fps)
 
-    def draw_fps(self, fps):
+    async def draw_fps(self, fps):
         fps = format(fps, ".0f")
         font = self.fps_font
         font.pad = True
         font.render_to(self.surface, (1, 2), fps, fgcolor="black")
         font.render_to(self.surface, (0, 0), fps, fgcolor="green")
 
-    def loop(self):
+    async def loop(self):
         # Game code runs here
         raise NotImplementedError
 
     def register_eventhandler(self, handler):
         self.eventhandlers.append(handler)
 
-    def handle_event(self, e):
+    async def handle_event(self, e):
         for eventhandler in self.eventhandlers:
-            eventhandler(e)
+            await wrap_async(eventhandler(e))
 
     def mouse_handler(self, e):
         if e.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN):
