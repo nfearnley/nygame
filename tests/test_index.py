@@ -36,7 +36,7 @@ def test_getitem_range():
     assert index[5.5:] == items[5:]
     assert index[:5] == items[:4]
     assert index[:5.5] == items[:5]
-    assert index[0:5:2] == items[1:4:2]
+    assert index[0:7:2] == items[1:5:2]
 
 
 def test_eq():

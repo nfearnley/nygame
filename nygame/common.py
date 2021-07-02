@@ -107,12 +107,19 @@ class Index(Generic[K, T]):
     def __getitem__(self, key: Union[slice, K]) -> T:
         if not isinstance(key, slice):
             return self.eq(key)
-        start_index = None
-        stop_index = None
-        if key.start is not None:
-            start_index = self.gteq_index(key.start)
-        if key.stop is not None:
-            stop_index = self.lt_index(key.stop)
+
+        start_index = key.start
+        if start_index is not None:
+            start_index = self.gteq_index(start_index)
+            if start_index is None:
+                return []
+
+        stop_index = key.stop
+        if stop_index is not None:
+            stop_index = self.gteq_index(stop_index)
+            if stop_index is None:
+                return []
+
         return self.items[start_index:stop_index:key.step]
 
     def eq(self, key: K) -> T:
