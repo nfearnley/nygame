@@ -1,4 +1,4 @@
-from typing import Generic, List, TypeVar, Union
+from typing import Generic, Sequence, Tuple, TypeVar, Union
 
 from bisect import bisect_left, bisect_right
 
@@ -100,32 +100,107 @@ class Index(Generic[K, T]):
     I have not tested how this will handle duplicate values.
     """
 
-    def __init__(self, items: List[T], keyattr: str):
+    def __init__(self, items: Sequence[T], keyattr: str):
         self.items = items
-        self.keys: List[K] = [getattr(i, keyattr) for i in items]
+        self.keys: Tuple[K] = tuple(getattr(i, keyattr) for i in items)
 
-    def __getitem__(self, key: Union[slice, K]) -> Union[None, T]:
-        if isinstance(key, slice):
-            start_index, stop_index = find_index_range(self.keys, key.start, key.stop)
-            return self.items[start_index:stop_index:key.step]
-        else:
-            index = find_index(self.keys, key)
-            if index is None:
-                return None
-            return self.items[index]
+    def __getitem__(self, key: Union[slice, K]) -> T:
+        if not isinstance(key, slice):
+            return self.eq(key)
+        start_index = None
+        stop_index = None
+        if key.start is not None:
+            start_index = self.gteq_index(key.start)
+        if key.stop is not None:
+            stop_index = self.lt_index(key.stop)
+        return self.items[start_index:stop_index:key.step]
 
-    def index(self, key: K) -> int:
-        return find_index(self.keys, key)
+    def eq(self, key: K) -> T:
+        index = self.eq_index(key)
+        if index is None:
+            return None
+        return self.items[index]
+
+    def lteq(self, key: K) -> T:
+        index = self.lteq_index(key)
+        if index is None:
+            return None
+        return self.items[index]
+
+    def lt(self, key: K) -> T:
+        index = self.lt_index(key)
+        if index is None:
+            return None
+        return self.items[index]
+
+    def gteq(self, key: K) -> T:
+        index = self.gteq_index(key)
+        if index is None:
+            return None
+        return self.items[index]
+
+    def gt(self, key: K) -> T:
+        index = self.gt_index(key)
+        if index is None:
+            return None
+        return self.items[index]
+
+    def eq_index(self, key: K) -> int:
+        index = self.gteq_index(key)
+        if index is None:
+            return None
+        if self.keys[index] != key:
+            return None
+        return index
+
+    def lteq_index(self, key: K) -> int:
+        index = bisect_right(self.keys, key) - 1
+        if index == -1:
+            return None
+        return index
+
+    def lt_index(self, key: K) -> int:
+        index = bisect_left(self.keys, key) - 1
+        if index == -1:
+            return None
+        return index
+
+    def gt_index(self, key: K) -> int:
+        index = bisect_right(self.keys, key)
+        if index == len(self.keys):
+            return None
+        return index
+
+    def gteq_index(self, key: K) -> int:
+        index = bisect_left(self.keys, key)
+        if index == len(self.keys):
+            return None
+        return index
 
 
-def find_index(keys: List[T], value: T) -> Union[None, int]:
-    index = bisect_right(keys, value) - 1
-    if index < 0:
-        index = None
-    return index
+def print_result(func, n):
+    print(format(func, "<15") + "│", end="")
+    if n is None:
+        print(format("", "<14") + " -")
+        return
+    s = (n + 1) * 2
+    spaces = (" " * s) + "^"
+    print(format(spaces, "<14") + format(n, ">2"))
 
 
-def find_index_range(keys: List[T], start: T, stop: T) -> int:
-    start_index = None if start is None else bisect_left(keys, start)
-    stop_index = None if stop is None else bisect_left(keys, stop)
-    return start_index, stop_index
+def test():
+    class Item:
+        def __init__(self, val):
+            self.val = val
+    item_vals = [-4, 0, 2, 4, 5, 7]
+    items = [Item(v) for v in item_vals]
+    keyindex = Index(items, "val")
+    vals = 5, 5.5, -7, 9
+    funcs = keyindex.lteq_index, keyindex.lt_index, keyindex.gt_index, keyindex.gteq_index
+    for f in funcs:
+        print()
+        print(format("ind │ ", ">17") + "".join(f"{i:>{2}}" for i, _ in enumerate(item_vals)))
+        print(format("val │ ", ">17") + "".join(f"{i:>{2}}" for i in item_vals))
+        print("─" * 15 + "┼" + "─" * 18)
+        for v in vals:
+            print_result(f"{f.__name__}({v})", f(v))
