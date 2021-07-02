@@ -176,31 +176,3 @@ class Index(Generic[K, T]):
         if index == len(self.keys):
             return None
         return index
-
-
-def print_result(func, n):
-    print(format(func, "<15") + "│", end="")
-    if n is None:
-        print(format("", "<14") + " -")
-        return
-    s = (n + 1) * 2
-    spaces = (" " * s) + "^"
-    print(format(spaces, "<14") + format(n, ">2"))
-
-
-def test():
-    class Item:
-        def __init__(self, val):
-            self.val = val
-    item_vals = [-4, 0, 2, 4, 5, 7]
-    items = [Item(v) for v in item_vals]
-    keyindex = Index(items, "val")
-    vals = 5, 5.5, -7, 9
-    funcs = keyindex.lteq_index, keyindex.lt_index, keyindex.gt_index, keyindex.gteq_index
-    for f in funcs:
-        print()
-        print(format("ind │ ", ">17") + "".join(f"{i:>{2}}" for i, _ in enumerate(item_vals)))
-        print(format("val │ ", ">17") + "".join(f"{i:>{2}}" for i in item_vals))
-        print("─" * 15 + "┼" + "─" * 18)
-        for v in vals:
-            print_result(f"{f.__name__}({v})", f(v))
