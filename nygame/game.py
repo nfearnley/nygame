@@ -30,6 +30,7 @@ class Game:
         self.running = True
         self.fps_font = font_cache.get_font("Consolas", 24)
 
+        self.preloop_handlers = []
         self.eventhandlers = []
         self.register_eventhandler(self.quit_handler)
         self.register_eventhandler(self.mouse_handler)
@@ -80,9 +81,11 @@ class Game:
         while self.running:
             if self.bgcolor is not None:
                 self.surface.fill(self.bgcolor)
+            for handler in self.preloop_handlers:
+                handler()
             events = pygame.event.get()
             for e in events:
-                self.handle_event(e)
+                await self.handle_event(e)
             await wrap_async(self.loop(events))
             if self.showfps:
                 await wrap_async(self.draw_fps(self.clock.get_fps()))
@@ -101,6 +104,9 @@ class Game:
     async def loop(self):
         # Game code runs here
         raise NotImplementedError
+
+    def register_preloop_handler(self, handler):
+        self.preloop_handlers.append(handler)
 
     def register_eventhandler(self, handler):
         self.eventhandlers.append(handler)
