@@ -37,6 +37,22 @@ def test_getitem_range():
     assert index[:5] == items[:4]
     assert index[:5.5] == items[:5]
     assert index[0:7:2] == items[1:5:2]
+    assert index[20:] == []
+    assert index[-20:] == items
+
+
+def test_word_range():
+    items = [
+        Item("w1", 6049),
+        Item("w2", 6144),
+        Item("w3", 6264),
+        Item("w4", 6384),
+        Item("w5", 6516),
+        Item("w6", 6624)
+    ]
+    index = Index(items, "num")
+    assert index[:6627 + 1] == items
+    assert index[6627 + 1:] == []
 
 
 def test_eq():

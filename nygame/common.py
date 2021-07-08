@@ -117,8 +117,6 @@ class Index(Generic[K, T]):
         stop_index = key.stop
         if stop_index is not None:
             stop_index = self.gteq_index(stop_index)
-            if stop_index is None:
-                return []
 
         return self.items[start_index:stop_index:key.step]
 
