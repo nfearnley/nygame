@@ -4,7 +4,7 @@ from . import _quietload    # disables pygame startup message
 
 from pygame import Rect, Color, joystick
 from . import time, digifont, emoji, data
-from .common import Coord, Index
+from .common import Coord
 from .music import music
 from .game import Game
 from .digifont import DigiText
