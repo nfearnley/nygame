@@ -86,7 +86,7 @@ class Coord:
         return (*self,) == (*other,)
 
     def __str__(self):
-        return str(self._xy)
+        return str(tuple(self._xy))
 
     def __repr__(self):
         return f"<Coord({self.x}, {self.y})>"
