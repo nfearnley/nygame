@@ -7,8 +7,6 @@ from pygame.time import set_timer
 
 __all__ = ["get_ticks", "wait", "delay", "set_timer", "Clock"]
 
-_start_time = None
-
 
 def get_ticks() -> int:
     """get the time in nanoseconds
@@ -137,7 +135,7 @@ class Clock:
         self._fps = 0
         self._fps_count = 0
 
-    def _tick(self, framerate=0, *, use_accurate_delay=False):
+    def _tick(self, framerate: float = 0, *, use_accurate_delay: bool = False) -> int:
         if (framerate):
             ns_per_frame = 10**9 / framerate
             self._rawpassed = get_ticks() - self._last_tick

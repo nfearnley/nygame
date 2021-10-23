@@ -1,20 +1,32 @@
 import inspect
 import asyncio
+from typing import Callable, Union, Any
 
-from nygame.common import Coord
 import pygame
-from . import font_cache, time
-from .music import music
+import pygame.event
+from pygame.event import Event
+import pygame.surface
+from pygame.color import Color
+
+from nygame import font_cache, time
+from nygame.music import music
+from nygame.common import Coord
 
 
-async def wrap_async(value):
+ColorInput = Union[str, tuple[int, int, int], list[int], int, tuple[int, int, int, int]]
+
+PreloopHandler = Callable[[], None]
+EventHandler = Callable[[Event], None]
+
+
+async def wrap_async(value: Any):
     if inspect.isawaitable(value):
         return await value
     return value
 
 
 class Game:
-    def __init__(self, *, size=(800, 600), scale=1, fps=30, showfps=False, bgcolor="black"):
+    def __init__(self, *, size: tuple[int, int] = (800, 600), scale: int = 1, fps: int = 30, showfps: bool = False, bgcolor: ColorInput = "black"):
         pygame.init()
         pygame.colordict.THECOLORS["clear"] = (0, 0, 0, 0)
 
@@ -22,7 +34,7 @@ class Game:
         self.scale = scale
         self.fps = fps
         self.showfps = showfps
-        self.bgcolor = bgcolor
+        self.bgcolor = Color(bgcolor)
 
         self._currsize = None
         self._currscale = None
@@ -30,8 +42,8 @@ class Game:
         self.running = True
         self.fps_font = font_cache.get_font("Consolas", 24)
 
-        self.preloop_handlers = []
-        self.eventhandlers = []
+        self.preloop_handlers: list[PreloopHandler] = []
+        self.eventhandlers: list[EventHandler] = []
         self.register_eventhandler(self.quit_handler)
         self.register_eventhandler(self.mouse_handler)
 
@@ -39,15 +51,13 @@ class Game:
         music.init(self)
 
     @property
-    def scale(self):
+    def scale(self) -> int:
         return self._scale
 
     @scale.setter
-    def scale(self, newscale):
+    def scale(self, newscale: int) -> None:
         if newscale is None:
             newscale = 1
-        if not isinstance(newscale, int) or newscale < 1:
-            raise ValueError(f"Invalid scale: {newscale}")
         self._scale = newscale
 
     def reset_display(self):
@@ -69,7 +79,7 @@ class Game:
         return int(x / self.scale), int(y / self.scale)
 
     @mouse_pos.setter
-    def mouse_pos(self, newpos):
+    def mouse_pos(self, newpos: tuple[int, int]):
         x, y = newpos
         newpos = x * self.scale, y * self.scale
         pygame.mouse.set_pos(newpos)
@@ -94,31 +104,32 @@ class Game:
             pygame.display.flip()
             self.clock.tick_busy_loop(self.fps)
 
-    async def draw_fps(self, fps):
-        fps = format(fps, ".0f")
+    async def draw_fps(self, fps: float):
+        fps_text = format(fps, ".0f")
         font = self.fps_font
         font.pad = True
-        font.render_to(self.surface, (1, 2), fps, fgcolor="black")
-        font.render_to(self.surface, (0, 0), fps, fgcolor="green")
+        font.render_to(self.surface, (1, 2), fps_text, fgcolor="black")
+        font.render_to(self.surface, (0, 0), fps_text, fgcolor="green")
 
-    async def loop(self):
+    async def loop(self, events: list[Event]) -> None:
         # Game code runs here
         raise NotImplementedError
 
-    def register_preloop_handler(self, handler):
+    def register_preloop_handler(self, handler: PreloopHandler):
         self.preloop_handlers.append(handler)
 
-    def register_eventhandler(self, handler):
+    def register_eventhandler(self, handler: EventHandler):
         self.eventhandlers.append(handler)
 
-    async def handle_event(self, e):
+    async def handle_event(self, e: Event):
         for eventhandler in self.eventhandlers:
             await wrap_async(eventhandler(e))
 
-    def mouse_handler(self, e):
+    # e must by Any before e.pos is not settable
+    def mouse_handler(self, e: Any):
         if e.type in (pygame.MOUSEMOTION, pygame.MOUSEBUTTONUP, pygame.MOUSEBUTTONDOWN):
-            e.pos = tuple(Coord(e.pos) / self.scale)
+            e.pos = tuple(Coord(*e.pos) / self.scale)
 
-    def quit_handler(self, e):
+    def quit_handler(self, e: Event):
         if e.type == pygame.QUIT:
             self.running = False
